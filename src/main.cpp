@@ -6,17 +6,15 @@ void competition_initialize(){
 	//LCD Autonomous Selector
 }
 Controller Controller1(E_CONTROLLER_MASTER);
-MotorGroup left_mg({1, -2, 3});
-MotorGroup right_mg({-4, 5, -6});
+MotorGroup LeftDrive({18, 19, 20});
+MotorGroup RightDrive({8, 9, 10});
 void autonomous(){
 
 }
 
 void opcontrol(){
-	
-
-
 	while (true) {
-		
+		LeftDrive.move(Controller1.get_analog(ANALOG_LEFT_Y));
+		RightDrive.move(Controller1.get_analog(ANALOG_RIGHT_Y));
 	}
 }

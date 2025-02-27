@@ -1,5 +1,5 @@
 #include <cmath>
-struct position{
+namespace aps{struct position{
     double x;
     double y;
     double heading;
@@ -48,6 +48,7 @@ position rotateTransform(position transform,double rotation){
     return rotatedTransform;
 }
 
-double updateGlobalTransform(double deltaL,double deltaR,double deltaB){
-    return 0;
-}
+void updateGlobalTransform(double deltaL,double deltaR,double deltaB){
+
+    return;
+}}
