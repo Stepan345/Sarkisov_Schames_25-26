@@ -40,7 +40,14 @@ double getLocalXTransform(double deltaL,double deltaR,double deltaB){
     double drift = deltaB-perfectDistance;
     return drift;
 }
+position rotateTransform(position transform,double rotation){
+    position rotatedTransform;
+    rotatedTransform.x = ((transform.x*std::cos(-rotation))+(transform.y*std::sin(rotation/2)));
+    rotatedTransform.y = ((transform.x*std::sin(-rotation))+(transform.y*std::cos(rotation/2)));
+    rotatedTransform.heading = transform.heading+rotation;
+    return rotatedTransform;
+}
+
 double updateGlobalTransform(double deltaL,double deltaR,double deltaB){
-
-
+    return 0;
 }
