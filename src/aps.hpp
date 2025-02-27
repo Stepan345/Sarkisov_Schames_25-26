@@ -1,6 +1,6 @@
 #include <cmath>
 namespace aps{
-        struct position{
+    struct position{
         double x;
         double y;
         double heading = 0;
