@@ -13,7 +13,11 @@ namespace aps{
     double sL;
     double sR;
     double sB;
-
+    double degToTravel(double degrees, double diameter){
+        double travelPerRotation = M_PI*diameter;
+        double numberOfRotations = degrees/360;
+        return numberOfRotations * travelPerRotation;
+    }
     void setOffsets(double offsetL, double offsetR, double offsetB){
         sL = offsetL;
         sR = offsetR;
