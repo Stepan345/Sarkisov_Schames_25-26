@@ -9,13 +9,11 @@ Imu imu(7);
 adi::Encoder vertical_encoder('A','B',false);
 adi::Encoder horizontal_encoder('C','D',false);
 // horizontal tracking wheel
-lemlib::TrackingWheel horizontal_tracking_wheel(&horizontal_encoder, lemlib::Omniwheel::NEW_275, -5.75);
-// vertical tracking wheel
-lemlib::TrackingWheel vertical_tracking_wheel(&vertical_encoder, lemlib::Omniwheel::NEW_275, -2.5);
+lemlib::TrackingWheel horizontal_tracking_wheel(&horizontal_encoder, lemlib::Omniwheel::NEW_275, -6.75);
 lemlib::Drivetrain drivetrain(
 	&LeftDrive,
 	&RightDrive,
-	13.25,//tbd
+	13.25,
 	lemlib::Omniwheel::NEW_275,
 	450,
 	2
@@ -45,7 +43,7 @@ lemlib::ControllerSettings angular_controller(2, // proportional gain (kP)
                                               0 // maximum acceleration (slew)
 );
 lemlib::OdomSensors sensors(
-    &vertical_tracking_wheel, // vertical tracking wheel 1, set to null
+    nullptr, // vertical tracking wheel 1, set to null
     nullptr, // vertical tracking wheel 2, set to nullptr as we are using IMEs
     &horizontal_tracking_wheel, // horizontal tracking wheel 1
     nullptr, // horizontal tracking wheel 2, set to nullptr as we don't have a second one
@@ -54,13 +52,13 @@ lemlib::OdomSensors sensors(
 // input curve for throttle input during driver control
 lemlib::ExpoDriveCurve throttle_curve(3, // joystick deadband out of 127
     10, // minimum output where drivetrain will move out of 127
-    1.019 // expo curve gain
+    1.03 // expo curve gain
 );
 
 // input curve for steer input during driver control
 lemlib::ExpoDriveCurve steer_curve(3, // joystick deadband out of 127
- 10, // minimum output where drivetrain will move out of 127
- 1.019 // expo curve gain
+    10, // minimum output where drivetrain will move out of 127
+    1.03// expo curve gain
 );
 
 // create the chassis
