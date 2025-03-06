@@ -7,7 +7,7 @@ void competition_initialize(){
 	//LCD Autonomous Selector
 }
 Controller Controller1(E_CONTROLLER_MASTER);
-ASSET(path_txt);
+ASSET(path_txt)
 void autonomous(){
     chassis.setPose(0, 0, 0);
     chassis.follow(path_txt,10,60000);
