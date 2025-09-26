@@ -85,6 +85,24 @@ namespace selector{
 			autonType = 2;
 		}
 	}
+	void clearScreen(){
+		lv_obj_clean(lv_scr_act());
+		lv_obj_t * plate = lv_label_create(lv_scr_act());
+		lv_label_set_text(plate,
+" _____            _    _                \n"
+"/  ___|          | |  (_)               \n"
+"\\ `--.  __ _ _ __| | ___ ___  _____   __\n"
+" `--. \\/ _` | '__| |/ / / __|/ _ \\ \\ / /\n"
+"/\\__/ / (_| | |  |   <| \\__ \\ (_) \\ V / \n"
+"\\____/ \\__,_|_|  |_|\\_\\_|___/\\___/ \\_/  \n"
+"                                        ");
+		lv_style_set_text_font(&blueREL,&lv_font_unscii_8);
+		lv_style_set_text_font(&redREL,&lv_font_unscii_8);
+		lv_obj_center(plate);
+		if(autonColor == 0)lv_obj_add_style(lv_scr_act(),&redREL,0);
+		else lv_obj_add_style(lv_scr_act(),&blueREL,0);
+
+	}
 	void loadAllianceSelect(){
 		red = lv_btn_create(lv_scr_act());
 		lv_obj_add_style(red,&redREL,0);
@@ -155,13 +173,13 @@ namespace selector{
 		speedLabel = lv_label_create(lv_scr_act());
 		speedSlider = lv_slider_create(lv_scr_act());
 		lv_slider_set_range(speedSlider,30,127);
-		lv_slider_set_value(speedSlider,50,LV_ANIM_OFF);
+		lv_slider_set_value(speedSlider,70,LV_ANIM_OFF);
 		lv_obj_set_pos(speedSlider,10,175);
 		lv_obj_set_width(speedSlider,200);
 		lv_obj_add_event_cb(speedSlider,sliderChanged,LV_EVENT_VALUE_CHANGED,0);
 		lv_obj_align_to(sliderLabel1,speedSlider,LV_ALIGN_TOP_MID,0,-20);
 		lv_obj_align_to(speedLabel,speedSlider,LV_ALIGN_OUT_RIGHT_MID,20,0);
-		lv_label_set_text(speedLabel,"50");
+		lv_label_set_text(speedLabel,"70");
 		
 		lv_obj_t * sliderLabel2 = lv_label_create(lv_scr_act());
 		lv_label_set_text(sliderLabel2,"Max Turn Speed");
@@ -272,13 +290,19 @@ namespace selector{
 	}
 	void debugLoop(pros::Controller Controller1){
 		if(!autonStarted){
-			while(!autonStarted && !Controller1.get_digital(DIGITAL_A)){
+			while(!autonStarted && !Controller1.get_digital(DIGITAL_A) && !Controller1.get_digital(DIGITAL_B)){
 				pros::delay(100);
 			}
-			if(!Controller1.get_digital(DIGITAL_A)){
+			clearScreen();
+			if(!(Controller1.get_digital(DIGITAL_A) || pros::c::competition_is_connected())){
 				pros::delay(3000);
 				autonomous();
+				pros::delay(5000);
+				opcontrol();
 			}
+			
+		}else{
+			clearScreen();
 		}
 	}
 }

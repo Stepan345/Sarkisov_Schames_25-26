@@ -5,8 +5,8 @@
 #include "main.h"
 using namespace pros;
 
-MotorGroup LeftDrive({-18, -19, -20}, pros::MotorGearset::blue);
-MotorGroup RightDrive({8, 9, 10}, pros::MotorGearset::blue);
+MotorGroup LeftDrive({-5, -6, -7}, pros::MotorGearset::blue);
+MotorGroup RightDrive({1, 2, 3}, pros::MotorGearset::blue);
 Imu imu(7); 
 //adi::Encoder vertical_encoder('A','B',false);
 adi::Encoder horizontal_encoder('C','D',false);

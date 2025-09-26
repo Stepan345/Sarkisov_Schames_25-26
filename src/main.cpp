@@ -1,6 +1,7 @@
 #include "main.h"
 #include "config.hpp"
 #include "screen.hpp"
+#include <string>
 
 #include "pros/apix.h"
 
@@ -14,16 +15,6 @@ Controller Controller1(E_CONTROLLER_MASTER);
 
 
 void autonomous(){
-	Task screen_task([&]() {
-		while (true) {
-			// print robot location to the brain screen
-			pros::lcd::print(0, "X: %f", chassis.getPose().x); // x
-			pros::lcd::print(1, "Y: %f", chassis.getPose().y); // y
-			pros::lcd::print(2, "Theta: %f", chassis.getPose().theta); // heading
-			// delay to save resources
-			pros::delay(20);
-		}
-	});
 	MotorGroup intake({-1,11});
 	int turnSpeed = 40;
 	float moveSpeed = lv_slider_get_value(selector::speedSlider);
@@ -61,14 +52,13 @@ void autonomous(){
 				intake.move(-127);
 				delay(2000);
 				chassis.moveToPoint(-12,48,2000,{.maxSpeed = moveSpeed},false);
-
-
+				chassis.moveToPoint(-15,36,2000,{.forwards = false, .maxSpeed = moveSpeed},false);
 				break;
 			case 2://Anti Auton
 				chassis.setPose(-60,12,-90);
 				intake.move(127);
 				chassis.moveToPoint(-12,12,4000,{.forwards = false});
-				chassis.turnToHeading(-95,3000,{.direction = lemlib::AngularDirection::CW_CLOCKWISE},false);
+				//chassis.turnToHeading(-95,3000,{.direction = lemlib::AngularDirection::CW_CLOCKWISE},false);
 				break;
 		}
 	}else{
@@ -104,21 +94,23 @@ void autonomous(){
 				intake.move(-127);
 				delay(1000);
 				chassis.moveToPoint(12,48,2000,{.maxSpeed = moveSpeed},false);
+				chassis.moveToPoint(15,36,3000,{.forwards = false,.maxSpeed = moveSpeed},false);
 				break;
 			case 2://Do nothing
-			break;
+				chassis.setPose(-60,12,-90);
+				intake.move(127);
+				chassis.moveToPoint(-12,12,4000,{.forwards = false});
+				//chassis.turnToHeading(-95,3000,{.direction = lemlib::AngularDirection::CW_CLOCKWISE},false);
+				break;
 		}
 
 	}
-	selector::disableDebug();
-	while (true)
-	{
-		delay(100);
-	}
+
+	//selector::disableDebug();
 }
 void initialize(){
 	selector::screenInit();
-    chassis.calibrate(); // calibrate sensors
+    //chassis.calibrate(); // calibrate sensors
 	
 }
 void competition_initialize(){
@@ -130,49 +122,83 @@ void pistonUpdate(bool leftPiston, bool rightPiston){
 	leftWing.set_value(leftPiston);
 	rightWing.set_value(rightPiston);
 }
+// void UI(){
+// 	int cursor = 0;
+// 	auto options[3] = {
+// 		"Upper Score",
+// 		"Middle Score",
+// 		"Lower Score"
+
+// 	};
+// 	auto rumbleOptions[3] = {
+// 		".",
+// 		"..",
+// 		"..."
+// 	};
+// 	while(true){
+// 		if(Controller1.get_digital_new_press(E_CONTROLLER_DIGITAL_UP)){
+// 			cursor = (cursor <= 0)?0:cursor-=1;
+// 			controller_rumble(rumbleOptions[cursor]);
+// 		}
+// 		if(Controller1.get_digital_new_press(E_CONTROLLER_DIGITAL_DOWN)){
+// 			cursor = (cursor >= 2)?2:cursor+=1;
+// 			controller_rumble(rumbleOptions[cursor]);
+// 		}
+// 		for(int i = 0;i<stringOptions.length;i+=1){
+// 			Controller1.set_text(i,0,obj_created + (cursor == i)?"<":"");
+// 		}
+// 		delay(250);
+// 	}
+// }
 void opcontrol(){
-	MotorGroup intake({1,-11});
+	//Task controllerUI(UI)
+	Motor Indexer(18);
+	Motor Intake(19); 
+	Motor Upper(20);
 	selector::debugLoop(Controller1);
-	int intakeSpin = 0;
-	bool piston[2] = {false,false};
-	bool pistonActual = false;
+	int intake = 0;
+	int indexer = 0;
+	int upper = 0;
 	while (true) {
-		if(Controller1.get_digital_new_press(DIGITAL_Y)){
-			//right wing indivigual
-			piston[1] = !piston[1];
-			pistonActual = !piston[1];
-			if(piston[0] == piston[1]){
-				pistonActual = piston[0];
-			}
-			pistonUpdate(piston[0],piston[1]);
-		}
-		if(Controller1.get_digital_new_press(DIGITAL_RIGHT)){
-			//left wing indivigual
-			piston[0] = !piston[0];
-			pistonActual = !piston[0];
-			if(piston[0] == piston[1]){
-				pistonActual = piston[0];
-			}
-			pistonUpdate(piston[0],piston[1]);
-		}
-		if(Controller1.get_digital_new_press(DIGITAL_L1)){
-			pistonActual = !pistonActual;
-			piston[0] = pistonActual;
-			piston[1] = pistonActual;
-			pistonUpdate(piston[0],piston[1]); 
-		}
-		if(Controller1.get_digital_new_press(DIGITAL_R1)){
-			intakeSpin = (intakeSpin == 0)?-1:(intakeSpin == 1)?-1:0;
+		
+		chassis.tank(Controller1.get_analog(E_CONTROLLER_ANALOG_LEFT_Y),Controller1.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y));
+		if(Controller1.get_digital_new_press(E_CONTROLLER_DIGITAL_R1)){
+			intake = (intake == 1)?0:1;
+		}else if(Controller1.get_digital_new_press(E_CONTROLLER_DIGITAL_R2)){
+			intake = (intake == -1)?0:-1;
 		}
 
-		if(Controller1.get_digital_new_press(DIGITAL_R2)){
-			intakeSpin = (intakeSpin == 0)?1:(intakeSpin == -1)?1:0;
+		if(Controller1.get_digital(E_CONTROLLER_DIGITAL_UP)){
+			intake = 1;
+			upper = 0;
+			indexer = -1.5;
 		}
-		intake.move(intakeSpin*127);
-		int leftY = Controller1.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-		int rightY = Controller1.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
-		chassis.tank(leftY, rightY);
-		delay(1);
+		if(Controller1.get_digital(E_CONTROLLER_DIGITAL_DOWN)){
+			intake = -1;
+			indexer = 1;
+			upper = 0;
+		}
+		if(Controller1.get_digital(E_CONTROLLER_DIGITAL_L1)){
+			upper = -1;
+			indexer = 1;
+			intake = 1;
+		}
+		if(Controller1.get_digital_new_press(E_CONTROLLER_DIGITAL_L2)){
+			upper = 1;
+			indexer = 1;
+			intake = 1;
+		}
+		if(Controller1.get_digital(E_CONTROLLER_DIGITAL_A)){
+			upper = 0;
+			indexer = 0;
+			intake = 0;
+		}
+		if(Controller1.get_digital(E_CONTROLLER_DIGITAL_B)){
+			indexer = -1;
+		}
+		Indexer.move(95.25*indexer);
+		Intake.move(127*intake);
+		Upper.move(127*upper);
+		delay(5);
 	}
-	
 }
