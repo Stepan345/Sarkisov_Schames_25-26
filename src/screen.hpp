@@ -1,8 +1,8 @@
 #include "main.h"
 // styles
 namespace selector{
-	int autonColor;
-	int autonType;
+	int autonColor = 0;
+	int autonType = 0;
 	bool autonStarted = false;
 	// extern bool autonStarted = false;
 	lv_style_t redREL;
@@ -17,23 +17,29 @@ namespace selector{
 	lv_style_t btnREL;
 	lv_style_t btnPRE;
 	lv_style_t btnSEL;
+
 	lv_style_t skillsREL;
 	lv_style_t skillsPRE;
+	lv_style_t skillsSEL;
 
 	lv_obj_t * red;
 	lv_obj_t * blue;
+	lv_obj_t * skills;
 
 	lv_obj_t * startAuton;
 	lv_obj_t * A1;//Goal Adjacent
+	auto A1Tag = "Win Point";
 	lv_obj_t * A2;//Mid-Field
+	auto A2Tag = "Goal Rush";
 	lv_obj_t * A3;//Anti-Auton
+	auto A3Tag = "Nothing";
 
 	lv_obj_t * speedSlider;
 	lv_obj_t * turnSlider;
 
 	lv_obj_t * speedLabel;
 	lv_obj_t * turnLabel;
-	//lv_obj_t * skills;
+	
 
 	//buttons
 
@@ -47,13 +53,25 @@ namespace selector{
 			lv_obj_add_style(blue,&blueSEL,0);
 			lv_obj_remove_style(red,&redSEL,0);
 			lv_obj_add_style(red,&redREL,0);
+			lv_obj_remove_style(skills,&skillsSEL,0);
+			lv_obj_add_style(skills,&skillsREL,0);
 			autonColor = 1;
 		}else if(code == LV_EVENT_CLICKED && btn == red){
 			lv_obj_remove_style(red,&redREL,0);
 			lv_obj_add_style(red,&redSEL,0);
 			lv_obj_remove_style(blue,&blueSEL,0);
 			lv_obj_add_style(blue,&blueREL,0);
+			lv_obj_remove_style(skills,&skillsSEL,0);
+			lv_obj_add_style(skills,&skillsREL,0);
 			autonColor = 0;
+		}else if(code == LV_EVENT_CLICKED && btn == skills){
+			lv_obj_remove_style(skills,&skillsREL,0);
+			lv_obj_add_style(skills,&skillsSEL,0);
+			lv_obj_remove_style(blue,&blueSEL,0);
+			lv_obj_add_style(blue,&blueREL,0);
+			lv_obj_remove_style(red,&redSEL,0);
+			lv_obj_add_style(red,&redREL,0);
+			autonColor = 2;
 		}
 	}
 	void selectType(lv_event_t * e){
@@ -86,22 +104,24 @@ namespace selector{
 		}
 	}
 	void clearScreen(){
+		Controller Controller1(E_CONTROLLER_MASTER);
+		Controller1.set_text(0,0,"screen cleared");
 		lv_obj_clean(lv_scr_act());
 		lv_obj_t * plate = lv_label_create(lv_scr_act());
 		lv_label_set_text(plate,
-" _____            _    _                \n"
-"/  ___|          | |  (_)               \n"
-"\\ `--.  __ _ _ __| | ___ ___  _____   __\n"
-" `--. \\/ _` | '__| |/ / / __|/ _ \\ \\ / /\n"
-"/\\__/ / (_| | |  |   <| \\__ \\ (_) \\ V / \n"
-"\\____/ \\__,_|_|  |_|\\_\\_|___/\\___/ \\_/  \n"
-"                                        ");
+" _________________ _____  _____    ___ \n"
+"|  ___| ___ \\ ___ \\  ___||  _  |  /   |\n"
+"| |__ | |_/ / |_/ /___ \\ | |/' | / /| |\n"
+"|  __||    /|    /    \\ \\|  /| |/ /_| |\n"
+"| |___| |\\ \\| |\\ \\/\\__/ /\\ |_/ /\\___  |\n"
+"\\____/\\_| \\_\\_| \\_\\____/  \\___/     |_/");
 		lv_style_set_text_font(&blueREL,&lv_font_unscii_8);
 		lv_style_set_text_font(&redREL,&lv_font_unscii_8);
+		lv_style_set_text_font(&skillsREL,&lv_font_unscii_8);
 		lv_obj_center(plate);
 		if(autonColor == 0)lv_obj_add_style(lv_scr_act(),&redREL,0);
-		else lv_obj_add_style(lv_scr_act(),&blueREL,0);
-
+		else if(autonColor == 1)lv_obj_add_style(lv_scr_act(),&blueREL,0);
+		else lv_obj_add_style(lv_scr_act(),&skillsREL,0);
 	}
 	void loadAllianceSelect(){
 		red = lv_btn_create(lv_scr_act());
@@ -123,6 +143,16 @@ namespace selector{
 		lv_label_set_text(blueLabel, "Blue");
 		lv_obj_center(blueLabel);
 		lv_obj_add_event_cb(blue,selectAlliance,LV_EVENT_CLICKED,NULL);
+
+		skills = lv_btn_create(lv_scr_act());
+		lv_obj_set_size(skills,100,50);
+		lv_obj_set_pos(skills,215,5);
+		lv_obj_add_style(skills,&skillsREL,0);
+		lv_obj_add_style(skills,&skillsPRE,LV_STATE_PRESSED);
+		lv_obj_t * skillsLabel = lv_label_create(skills);
+		lv_label_set_text(skillsLabel, "Skills");
+		lv_obj_center(skillsLabel);
+		lv_obj_add_event_cb(skills,selectAlliance,LV_EVENT_CLICKED,NULL);
 	}
 	void sliderChanged(lv_event_t * e){
 		lv_event_code_t code = lv_event_get_code(e);
@@ -156,13 +186,13 @@ namespace selector{
 		lv_obj_set_pos(A2,156,75);
 		lv_obj_set_pos(A3,307,75);
 		lv_obj_t * A1Label = lv_label_create(A1);
-		lv_label_set_text(A1Label, "Goal Adjacent");
+		lv_label_set_text(A1Label, A1Tag);
 		lv_obj_center(A1Label);
 		lv_obj_t * A2Label = lv_label_create(A2);
-		lv_label_set_text(A2Label, "Mid-Field");
+		lv_label_set_text(A2Label, A2Tag);
 		lv_obj_center(A2Label);
 		lv_obj_t * A3Label = lv_label_create(A3);
-		lv_label_set_text(A3Label, "Anti-Auton");
+		lv_label_set_text(A3Label, A3Tag);
 		lv_obj_center(A3Label);
 		lv_obj_add_event_cb(A1,selectType,LV_EVENT_CLICKED,NULL);
 		lv_obj_add_event_cb(A2,selectType,LV_EVENT_CLICKED,NULL);
@@ -247,6 +277,27 @@ namespace selector{
 		lv_style_set_border_color(&blueSEL,lv_color_make(255,255,255));
 		lv_style_set_border_width(&blueSEL,3);
 		lv_style_set_radius(&blueSEL,1);
+
+		//skills
+		lv_style_init(&skillsREL);
+		lv_style_set_text_font(&skillsREL,&lv_font_montserrat_20);
+		lv_style_set_bg_color(&skillsREL,lv_palette_main(LV_PALETTE_GREEN));
+		lv_style_set_text_color(&skillsREL,lv_color_make(255,255,255));
+		lv_style_set_radius(&skillsREL,1);
+
+		lv_style_init(&skillsPRE);
+		lv_style_set_text_font(&skillsPRE,&lv_font_montserrat_20);
+		lv_style_set_bg_color(&skillsPRE,lv_palette_darken(LV_PALETTE_GREEN,3));
+		lv_style_set_text_color(&skillsPRE,lv_color_make(255,255,255));
+		lv_style_set_radius(&skillsPRE,1);
+
+		lv_style_init(&skillsSEL);
+		lv_style_set_text_font(&skillsSEL,&lv_font_montserrat_20);
+		lv_style_set_bg_color(&skillsSEL,lv_palette_main(LV_PALETTE_GREEN));
+		lv_style_set_text_color(&skillsSEL,lv_color_make(255,255,255));
+		lv_style_set_border_color(&skillsSEL,lv_color_make(255,255,255));
+		lv_style_set_border_width(&skillsSEL,3);
+		lv_style_set_radius(&skillsSEL,1);
 
 		//other buttons
 		lv_style_init(&btnREL);
