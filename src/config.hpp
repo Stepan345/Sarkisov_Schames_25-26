@@ -13,7 +13,7 @@ Imu imu(8);
 Rotation vertical_encoder(-17);
 // horizontal tracking wheel
 //lemlib::TrackingWheel horizontal_tracking_wheel(&horizontal_encoder, lemlib::Omniwheel::NEW_275, -6.75);
-lemlib::TrackingWheel vertical_tracking_wheel(&vertical_encoder, lemlib::Omniwheel::NEW_2,0);
+lemlib::TrackingWheel vertical_tracking_wheel(&vertical_encoder, 2.025,0);
 lemlib::Drivetrain drivetrain(
 	&LeftDrive,
 	&RightDrive,
@@ -31,7 +31,7 @@ lemlib::ControllerSettings lateral_controller(5.5,//15 proportional gain (kP)
                                               1,//1, // 1 small error range, in inches
                                               100,//100, // 100 small error range timeout, in milliseconds
                                               3,//3, // 3 large error range, in inches
-                                              100000,//500, // 500 large error range timeout, in milliseconds
+                                              1000,//500, // 500 large error range timeout, in milliseconds
                                               20//100 // 20 maximum acceleration (slew)
 );
 // angular PID controller
@@ -42,7 +42,7 @@ lemlib::ControllerSettings angular_controller(2, // proportional gain (kP)
                                               1, // 1 small error range, in degrees
                                               100, // 100 small error range timeout, in milliseconds
                                               31, // 3l arge error range, in degrees
-                                              100000, // 500 large error range timeout, in milliseconds
+                                              1000, // 500 large error range timeout, in milliseconds
                                               100 // 0 maximum acceleration (slew)
 );
 lemlib::OdomSensors sensors(
