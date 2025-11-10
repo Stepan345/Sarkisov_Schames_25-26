@@ -194,7 +194,7 @@ void opcontrol(){
 	//Controller1.set_text(0,0,"works");
 	//Controller1.clear();
 	double lastVal = 0;
-	int errRange = 10;
+	int errRange = 50;
 	int ballCount = 0;
 	while (true){
 		if(indexer < 0){
