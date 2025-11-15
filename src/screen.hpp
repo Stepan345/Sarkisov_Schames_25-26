@@ -28,11 +28,18 @@ namespace selector{
 
 	lv_obj_t * startAuton;
 	lv_obj_t * A1;//Goal Adjacent
+	lv_obj_t * A1Label;
 	auto A1Tag = "Win Point";
 	lv_obj_t * A2;//Mid-Field
+	lv_obj_t * A2Label;
 	auto A2Tag = "Goal Rush";
 	lv_obj_t * A3;//Anti-Auton
+	lv_obj_t * A3Label;
 	auto A3Tag = "Nothing";
+
+	auto SkillsA1Tag = "Skills Path 1";
+	auto SkillsA2Tag = "Skills Path 2";
+	auto SkillsA3Tag = "Skills Path 3";
 
 	lv_obj_t * speedSlider;
 	lv_obj_t * turnSlider;
@@ -55,6 +62,9 @@ namespace selector{
 			lv_obj_add_style(red,&redREL,0);
 			lv_obj_remove_style(skills,&skillsSEL,0);
 			lv_obj_add_style(skills,&skillsREL,0);
+			lv_label_set_text(A1Label, A1Tag);
+			lv_label_set_text(A2Label, A2Tag);
+			lv_label_set_text(A3Label, A3Tag);
 			autonColor = 1;
 		}else if(code == LV_EVENT_CLICKED && btn == red){
 			lv_obj_remove_style(red,&redREL,0);
@@ -63,6 +73,9 @@ namespace selector{
 			lv_obj_add_style(blue,&blueREL,0);
 			lv_obj_remove_style(skills,&skillsSEL,0);
 			lv_obj_add_style(skills,&skillsREL,0);
+			lv_label_set_text(A1Label, A1Tag);
+			lv_label_set_text(A2Label, A2Tag);
+			lv_label_set_text(A3Label, A3Tag);
 			autonColor = 0;
 		}else if(code == LV_EVENT_CLICKED && btn == skills){
 			lv_obj_remove_style(skills,&skillsREL,0);
@@ -71,6 +84,9 @@ namespace selector{
 			lv_obj_add_style(blue,&blueREL,0);
 			lv_obj_remove_style(red,&redSEL,0);
 			lv_obj_add_style(red,&redREL,0);
+			lv_label_set_text(A1Label, SkillsA1Tag);
+			lv_label_set_text(A2Label, SkillsA2Tag);
+			lv_label_set_text(A3Label, SkillsA3Tag);
 			autonColor = 2;
 		}
 	}
@@ -185,13 +201,13 @@ namespace selector{
 		lv_obj_set_pos(A1,5,75);
 		lv_obj_set_pos(A2,156,75);
 		lv_obj_set_pos(A3,307,75);
-		lv_obj_t * A1Label = lv_label_create(A1);
+		A1Label = lv_label_create(A1);
 		lv_label_set_text(A1Label, A1Tag);
 		lv_obj_center(A1Label);
-		lv_obj_t * A2Label = lv_label_create(A2);
+		A2Label = lv_label_create(A2);
 		lv_label_set_text(A2Label, A2Tag);
 		lv_obj_center(A2Label);
-		lv_obj_t * A3Label = lv_label_create(A3);
+		A3Label = lv_label_create(A3);
 		lv_label_set_text(A3Label, A3Tag);
 		lv_obj_center(A3Label);
 		lv_obj_add_event_cb(A1,selectType,LV_EVENT_CLICKED,NULL);
@@ -203,26 +219,26 @@ namespace selector{
 		speedLabel = lv_label_create(lv_scr_act());
 		speedSlider = lv_slider_create(lv_scr_act());
 		lv_slider_set_range(speedSlider,30,127);
-		lv_slider_set_value(speedSlider,70,LV_ANIM_OFF);
+		lv_slider_set_value(speedSlider,90,LV_ANIM_OFF);
 		lv_obj_set_pos(speedSlider,10,175);
 		lv_obj_set_width(speedSlider,200);
 		lv_obj_add_event_cb(speedSlider,sliderChanged,LV_EVENT_VALUE_CHANGED,0);
 		lv_obj_align_to(sliderLabel1,speedSlider,LV_ALIGN_TOP_MID,0,-20);
 		lv_obj_align_to(speedLabel,speedSlider,LV_ALIGN_OUT_RIGHT_MID,20,0);
-		lv_label_set_text(speedLabel,"70");
+		lv_label_set_text(speedLabel,"90");
 		
 		lv_obj_t * sliderLabel2 = lv_label_create(lv_scr_act());
 		lv_label_set_text(sliderLabel2,"Max Turn Speed");
 		turnSlider = lv_slider_create(lv_scr_act());
 		turnLabel = lv_label_create(lv_scr_act());
 		lv_slider_set_range(turnSlider,30,127);
-		lv_slider_set_value(turnSlider,40,LV_ANIM_OFF);
+		lv_slider_set_value(turnSlider,60,LV_ANIM_OFF);
 		lv_obj_set_pos(turnSlider,10,200);
 		lv_obj_set_width(turnSlider,200);
 		lv_obj_add_event_cb(turnSlider,sliderChanged,LV_EVENT_VALUE_CHANGED,0);
 		lv_obj_align_to(sliderLabel2,turnSlider,LV_ALIGN_BOTTOM_MID,0,20);
 		lv_obj_align_to(turnLabel,turnSlider,LV_ALIGN_OUT_RIGHT_MID,20,0);
-		lv_label_set_text(turnLabel,"40");
+		lv_label_set_text(turnLabel,"60");
 		
 	}
 	

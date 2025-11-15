@@ -7,18 +7,17 @@
 
 using namespace pros;
 
-char* autons[3] = {"Close","Far","Do Nothing"};
+//char* autons[3] = {"Close","Far","Do Nothing"};
 int autonSelect = 0;
-char* colors[2] = {"Blue","Red"};
+//char* colors[2] = {"Blue","Red"};
 int autonColor = 0;//blue = 0 red = 1
 Controller Controller1(E_CONTROLLER_MASTER);
-ASSET(SkillsPath1_txt);
-ADIDigitalOut Tongue('A');
+adi::DigitalOut Tongue('A');
 void autonomous(){
 	Motor Indexer(18);
 	Motor Intake(19); 
 	Motor Upper(20);	
-	int turnSpeed = 60;
+	int turnSpeed = lv_slider_get_value(selector::turnSlider);
 	float moveSpeed = lv_slider_get_value(selector::speedSlider);
 	pros::Task print([](){
 		while(true){
@@ -39,10 +38,10 @@ void autonomous(){
 				chassis.setPose(-48,0,90);
 				//move to middle goal
 				Intake.move(127);
-				Indexer.move(-100);
+				Indexer.move(-127);
 				chassis.moveToPoint(-24,0,2000,{.maxSpeed = moveSpeed},false);
 				chassis.turnToPoint(-24,24,2000,{.maxSpeed = turnSpeed},false);
-				chassis.moveToPoint(-24,24,4000,{.maxSpeed = moveSpeed*0.666},false);
+				chassis.moveToPoint(-24,24,4000,{.maxSpeed = moveSpeed*0.666f},false);
 				chassis.turnToPoint(0,0,2000,{.maxSpeed = turnSpeed},false);
 				chassis.moveToPoint(-16,16,4000,{.maxSpeed = moveSpeed},false);
 				Upper.move(-127);
@@ -91,13 +90,13 @@ void autonomous(){
 				Intake.move(127);
 				Indexer.move(-127);
 				chassis.moveToPose(-36,-24,90,3000,{.maxSpeed = moveSpeed,.minSpeed = moveSpeed-50},false);
-				chassis.moveToPoint(-13,-24,3000,{.maxSpeed = moveSpeed*0.75},false);//pick up center cubes
+				chassis.moveToPoint(-13,-24,3000,{.maxSpeed = moveSpeed*0.75f},false);//pick up center cubes
 				chassis.turnToPoint(-48,-48,3000,{.maxSpeed = turnSpeed},false);
 				Indexer.brake();
 				Intake.brake();
 				chassis.moveToPoint(-48,-48,3000,{.maxSpeed = moveSpeed},false);
 				Tongue.set_value(true);//extend tongue
-				chassis.turnToPoint(-58,-48,3000,{.maxSpeed = moveSpeed},false);
+				chassis.turnToPoint(-58,-48,3000,{.maxSpeed = (int)moveSpeed},false);
 				Intake.move(127);
 				Indexer.move(-127);
 				chassis.moveToPose(-58,-48,-90,5000,{.maxSpeed = 127},false);//move to tube
@@ -149,12 +148,62 @@ void autonomous(){
 
 	}else{//skills
 		switch(selector::autonType){
-			case 0://Close
+			case 0://Skills 1
 				chassis.setPose(-48,0,90);
 				Intake.move(127);
 				Indexer.move(-127);
-				chassis.follow(SkillsPath1_txt,10,10000,true,false);
-				
+				//collect balls from center
+				chassis.turnToPoint(-17,28,2000,{.maxSpeed = turnSpeed},false);
+				chassis.moveToPoint(-17,28,4000,{.maxSpeed = moveSpeed*0.666f,.minSpeed=moveSpeed*0.333f},false);
+				chassis.moveToPoint(28,25,4000,{.maxSpeed = moveSpeed,.minSpeed = moveSpeed * 0.666f},false);
+				chassis.moveToPoint(38,47,4000,{.maxSpeed = moveSpeed},false);
+				Tongue.set_value(true);
+				//align with loader
+				chassis.turnToPoint(68,47,2000,{.maxSpeed = turnSpeed},false);
+				chassis.moveToPose(58,47,0,5000,{.maxSpeed = 127},false);//move to tube
+				for(int i=0;i<5;i++){//rock back and forth to intake balls better
+					delay(1000);//wait a couple of seconds to intake
+					chassis.moveToPoint(55,47,2000,{.forwards = false,.maxSpeed = moveSpeed},false);
+					chassis.moveToPose(58,47,0,5000,{.maxSpeed = moveSpeed},false);
+				}
+				chassis.moveToPoint(48,47,2000,{.forwards = false,.maxSpeed = moveSpeed},false);//reverse out of the tube
+				chassis.turnToHeading(90,2000,{.maxSpeed = turnSpeed},false);
+				Tongue.set_value(false);//retract tongue
+				delay(500);//half a second delay to let tongue fully retract
+				chassis.moveToPose(30,-48,90,2000,{.maxSpeed = moveSpeed},false);//move to long goal
+				Intake.move(127);
+				Indexer.move(127);
+				Upper.move(127);//outake
+				delay(5000);
+				Upper.brake();
+				Indexer.move(-127);
+				chassis.moveToPoint(48,47,2000,{.forwards = false,.maxSpeed = moveSpeed},false);//reverse out of long goal
+				chassis.turnToPoint(24,-24,2000,{.maxSpeed = turnSpeed},false);
+				chassis.moveToPose(24,-24,-90,4000,{.maxSpeed = moveSpeed,.minSpeed = moveSpeed * 0.5f},false);
+				chassis.moveToPose(-24,24,225,4000,{.maxSpeed = moveSpeed,.minSpeed = moveSpeed * 0.5f},false);
+				chassis.moveToPoint(-48,-48,5000,{.maxSpeed = moveSpeed},false);
+				Tongue.set_value(true);//extend tongue
+				chassis.turnToPoint(-58,-48,2000,{.maxSpeed = turnSpeed},false);
+				chassis.moveToPose(-58,-48,-90,5000,{.maxSpeed = 127},false);//move to tube
+				for(int i=0;i<5;i++){//rock back and forth to intake balls better
+					delay(1000);//wait a couple of seconds to intake
+					chassis.moveToPoint(55,47,2000,{.forwards = false,.maxSpeed = moveSpeed},false);
+					chassis.moveToPose(58,47,0,5000,{.maxSpeed = moveSpeed},false);
+				}
+				chassis.moveToPoint(-48,-48,2000,{.forwards = false,.maxSpeed = moveSpeed},false);//reverse out of the tube
+				chassis.turnToHeading(90,2000,{.maxSpeed = turnSpeed},false);
+				Tongue.set_value(false);//retract tongue
+				delay(500);//half a second delay to let tongue fully retract
+				chassis.moveToPose(-30,-48,90,2000,{.maxSpeed = moveSpeed},false);//move to long goal
+				Intake.move(127);
+				Indexer.move(127);
+				Upper.move(127);//outake
+				while(!Controller1.get_digital_new_press(DIGITAL_A)){//reverses the indexer every couple of seconds in order to stop the balls from getting stuck
+					delay(3000);
+					Indexer.move(-127);
+					delay(1000);
+					Indexer.move(127);
+				}
 				break;
 			case 2://Anti Auton
 				
