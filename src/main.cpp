@@ -256,10 +256,9 @@ void opcontrol(){
 		}else if(indexer > 0){
 			double difference = dist.get() - lastVal;
 			if(difference>errRange){
-				ballCount++;
+				ballCount++
 			}
 		}
-
 		//Controller1.set_text(0,0,"X:"+std::to_string(chassis.getPose().x)+" Y: "+std::to_string(chassis.getPose().y));
 		Controller1.set_text(0,0,"Cubits: "+std::to_string(ballCount));
 		chassis.tank(Controller1.get_analog(E_CONTROLLER_ANALOG_LEFT_Y),Controller1.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y));
