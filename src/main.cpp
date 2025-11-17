@@ -35,55 +35,16 @@ void autonomous(){
     if(selector::autonColor == 0){
 		switch(selector::autonType){ //Red
 			case 0://Close
-				chassis.setPose(-48,0,90);
-				//move to middle goal
 				Intake.move(127);
-				Indexer.move(-127);
-				chassis.moveToPoint(-24,0,2000,{.maxSpeed = moveSpeed},false);
-				chassis.turnToPoint(-24,24,2000,{.maxSpeed = turnSpeed},false);
-				chassis.moveToPoint(-24,24,4000,{.maxSpeed = moveSpeed*0.666f},false);
-				chassis.turnToPoint(0,0,2000,{.maxSpeed = turnSpeed},false);
-				chassis.moveToPoint(-16,16,4000,{.maxSpeed = moveSpeed},false);
-				Upper.move(-127);
-				Intake.move(80);
-				Indexer.move(50);
-				delay(3000);
-				Intake.move(127);
-				Indexer.move(-127);
-				Upper.brake();
-				chassis.moveToPose(-24,24,180,2000,{.forwards = false,.maxSpeed = moveSpeed},false);
-				chassis.moveToPoint(-24,-24,4000,{.maxSpeed = moveSpeed},false);
-				chassis.turnToPoint(-48,-48,2000,{.maxSpeed = turnSpeed},false);
-				chassis.moveToPoint(-48,-48,5000,{.maxSpeed = moveSpeed},false);
-				chassis.turnToHeading(90,2000,{.maxSpeed = turnSpeed},false);
-				chassis.moveToPoint(-30,-48,2000,{.maxSpeed = moveSpeed},false);
-				//chassis.turnToPoint(-24,-49,2000,{.maxSpeed = turnSpeed},false);
-				Upper.move(127);
-				Indexer.move(90);
-				delay(4000);
-				chassis.moveToPoint(-48,-48,2000,{.forwards = false,.maxSpeed = moveSpeed},false);
-				Tongue.set_value(true);
-				chassis.turnToPoint(-58,-48,2000,{.maxSpeed = turnSpeed},false);
-				chassis.moveToPose(-58,-48,-90,2000,{.maxSpeed = 127},false);
-				Upper.brake();
-				Indexer.move(-127);
-				delay(5000);
-				Intake.brake();
-				Upper.brake();
-				Indexer.brake();
-				chassis.moveToPoint(-48,-48,2000,{.forwards = false,.maxSpeed = moveSpeed},false);
-				chassis.turnToPoint(-48,48,2000,{.maxSpeed = turnSpeed},false);
-				chassis.moveToPoint(-42,0,5000,{.maxSpeed = moveSpeed,.minSpeed = moveSpeed = moveSpeed-10},false);
-				chassis.moveToPoint(-48,48,5000,{.maxSpeed = moveSpeed},false);
-				chassis.turnToHeading(90,2000,{.maxSpeed = turnSpeed},false);
-				chassis.moveToPoint(-30,-48,2000,{.maxSpeed = moveSpeed},false);
-				Upper.move(127);
 				Indexer.move(127);
-				Intake.move(127);
+				chassis.setPose(-49,0,180);
+				Tongue.set_value(true);
+				chassis.moveToPoint(-38,-48,3000,{.maxSpeed = moveSpeed},false);
+				chassis.turnToHeading(-90,2000,{.maxSpeed = turnSpeed},false);
+				chassis.moveToPose(-58,-47,-90,5000,{.maxSpeed = 127},false);//move to tube
 				delay(4000);
-				Intake.brake();
-				Upper.brake();
-				Indexer.brake();
+				chassis.moveToPoint(-48,-48,2000,{.forwards = false,.maxSpeed = moveSpeed},false);
+				Tongue.set_value(false);
 				break;
 			case 1://Far
 				chassis.setPose(-48,-12,90);
@@ -160,17 +121,17 @@ void autonomous(){
 				Tongue.set_value(true);
 				//align with loader
 				chassis.turnToPoint(68,47,2000,{.maxSpeed = turnSpeed},false);
-				chassis.moveToPose(58,47,0,5000,{.maxSpeed = 127},false);//move to tube
+				chassis.moveToPose(58,47,90,5000,{.maxSpeed = 127},false);//move to tube
 				for(int i=0;i<5;i++){//rock back and forth to intake balls better
 					delay(1000);//wait a couple of seconds to intake
-					chassis.moveToPoint(55,47,2000,{.forwards = false,.maxSpeed = moveSpeed},false);
-					chassis.moveToPose(58,47,0,5000,{.maxSpeed = moveSpeed},false);
+					chassis.moveToPoint(53,47,2000,{.forwards = false,.maxSpeed = moveSpeed},false);
+					chassis.moveToPose(58,47,90,5000,{.maxSpeed = moveSpeed},false);
 				}
 				chassis.moveToPoint(48,47,2000,{.forwards = false,.maxSpeed = moveSpeed},false);//reverse out of the tube
-				chassis.turnToHeading(90,2000,{.maxSpeed = turnSpeed},false);
+				chassis.turnToHeading(-90,2000,{.maxSpeed = turnSpeed},false);
 				Tongue.set_value(false);//retract tongue
 				delay(500);//half a second delay to let tongue fully retract
-				chassis.moveToPose(30,-48,90,2000,{.maxSpeed = moveSpeed},false);//move to long goal
+				chassis.moveToPose(30,-48,-90,2000,{.maxSpeed = moveSpeed},false);//move to long goal
 				Intake.move(127);
 				Indexer.move(127);
 				Upper.move(127);//outake
@@ -180,7 +141,7 @@ void autonomous(){
 				chassis.moveToPoint(48,47,2000,{.forwards = false,.maxSpeed = moveSpeed},false);//reverse out of long goal
 				chassis.turnToPoint(24,-24,2000,{.maxSpeed = turnSpeed},false);
 				chassis.moveToPose(24,-24,-90,4000,{.maxSpeed = moveSpeed,.minSpeed = moveSpeed * 0.5f},false);
-				chassis.moveToPose(-24,24,225,4000,{.maxSpeed = moveSpeed,.minSpeed = moveSpeed * 0.5f},false);
+				chassis.moveToPose(-24,-24,225,4000,{.maxSpeed = moveSpeed,.minSpeed = moveSpeed * 0.5f},false);
 				chassis.moveToPoint(-48,-48,5000,{.maxSpeed = moveSpeed},false);
 				Tongue.set_value(true);//extend tongue
 				chassis.turnToPoint(-58,-48,2000,{.maxSpeed = turnSpeed},false);
@@ -188,7 +149,7 @@ void autonomous(){
 				for(int i=0;i<5;i++){//rock back and forth to intake balls better
 					delay(1000);//wait a couple of seconds to intake
 					chassis.moveToPoint(55,47,2000,{.forwards = false,.maxSpeed = moveSpeed},false);
-					chassis.moveToPose(58,47,0,5000,{.maxSpeed = moveSpeed},false);
+					chassis.moveToPose(58,47,-90,5000,{.maxSpeed = moveSpeed},false);
 				}
 				chassis.moveToPoint(-48,-48,2000,{.forwards = false,.maxSpeed = moveSpeed},false);//reverse out of the tube
 				chassis.turnToHeading(90,2000,{.maxSpeed = turnSpeed},false);
@@ -256,7 +217,7 @@ void opcontrol(){
 		}else if(indexer > 0){
 			double difference = dist.get() - lastVal;
 			if(difference>errRange){
-				ballCount++
+				ballCount++;
 			}
 		}
 		//Controller1.set_text(0,0,"X:"+std::to_string(chassis.getPose().x)+" Y: "+std::to_string(chassis.getPose().y));
