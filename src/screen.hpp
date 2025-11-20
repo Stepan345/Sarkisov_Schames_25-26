@@ -1,10 +1,13 @@
 #include "main.h"
 // styles
 namespace selector{
+	bool isComp = false;
 	int autonColor = 0;
 	int autonType = 0;
 	bool autonStarted = false;
 	// extern bool autonStarted = false;
+	lv_style_t pink;
+
 	lv_style_t redREL;
 
 	lv_style_t redPRE;
@@ -124,20 +127,33 @@ namespace selector{
 		Controller1.set_text(0,0,"screen cleared");
 		lv_obj_clean(lv_scr_act());
 		lv_obj_t * plate = lv_label_create(lv_scr_act());
-		lv_label_set_text(plate,
-" _________________ _____  _____    ___ \n"
-"|  ___| ___ \\ ___ \\  ___||  _  |  /   |\n"
-"| |__ | |_/ / |_/ /___ \\ | |/' | / /| |\n"
-"|  __||    /|    /    \\ \\|  /| |/ /_| |\n"
-"| |___| |\\ \\| |\\ \\/\\__/ /\\ |_/ /\\___  |\n"
-"\\____/\\_| \\_\\_| \\_\\____/  \\___/     |_/");
 		lv_style_set_text_font(&blueREL,&lv_font_unscii_8);
 		lv_style_set_text_font(&redREL,&lv_font_unscii_8);
 		lv_style_set_text_font(&skillsREL,&lv_font_unscii_8);
-		lv_obj_center(plate);
-		if(autonColor == 0)lv_obj_add_style(lv_scr_act(),&redREL,0);
-		else if(autonColor == 1)lv_obj_add_style(lv_scr_act(),&blueREL,0);
-		else lv_obj_add_style(lv_scr_act(),&skillsREL,0);
+		lv_style_set_text_font(&pink,&lv_font_unscii_8);
+		if(!isComp){
+			lv_label_set_text(plate,
+" __  _____ _____  _____    ___   ___  \n"
+"/  ||  _  |  ___||  _  |  /   | / _ \\ \n"
+"`| || |/' |___ \\ | |/' | / /| |/ /_\\ \\\n"
+" | ||  /| |   \\ \\|  /| |/ /_| ||  _  |\n"
+"_| |\\ |_/ /\\__/ /\\ |_/ /\\___  || | | |\n"
+"\\___/\\___/\\____/  \\___/     |_/\\_| |_/");
+			lv_obj_center(plate);
+			if(autonColor == 0)lv_obj_add_style(lv_scr_act(),&redREL,0);
+			else if(autonColor == 1)lv_obj_add_style(lv_scr_act(),&blueREL,0);
+			else lv_obj_add_style(lv_scr_act(),&skillsREL,0);
+		}else{
+			lv_label_set_text(plate,
+"______  __   _   _  _   __ __   _____ \n"
+"| ___ \\/  | | \\ | || | / //  | |____ |\n"
+"| |_/ /`| | |  \\| || |/ / `| |     / /\n"
+"|  __/  | | | . ` ||    \\  | |     \\ \\\n"
+"| |    _| |_| |\\  || |\\  \\_| |_.___/ /\n"
+"\\_|    \\___/\\_| \\_/\\_| \\_/\\___/\\____/ ");
+			lv_obj_center(plate);
+			lv_obj_add_style(lv_scr_act(),&pink),0;
+		}
 	}
 	void loadAllianceSelect(){
 		red = lv_btn_create(lv_scr_act());
@@ -335,6 +351,14 @@ namespace selector{
 		lv_style_set_border_color(&btnSEL,lv_color_make(255,255,255));
 		lv_style_set_border_width(&btnSEL,3);
 		lv_style_set_radius(&btnSEL,1);
+
+		lv_style_init(&pink);
+		lv_style_set_text_font(&pink,&lv_font_montserrat_16);
+		lv_style_set_bg_color(&pink,lv_palette_main(LV_PALETTE_PINK));
+		lv_style_set_text_color(&pink,lv_color_make(0,0,0));
+		lv_style_set_border_color(&pink,lv_color_make(255,255,255));
+		lv_style_set_border_width(&pink,3);
+		lv_style_set_radius(&pink,1);
 
 		
 		//start auton button
