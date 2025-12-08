@@ -55,13 +55,13 @@ lemlib::OdomSensors sensors(
 // input curve for throttle input during driver control
 lemlib::ExpoDriveCurve throttle_curve(3, // joystick deadband out of 127
     5, // minimum output where drivetrain will move out of 127
-    1.04 // expo curve gain
+    1.02 // expo curve gain
 );
 
 // input curve for steer input during driver control
 lemlib::ExpoDriveCurve steer_curve(3, // joystick deadband out of 127
     5, // minimum output where drivetrain will move out of 127
-    1.04// expo curve gain
+    1.02// expo curve gain
 );
 
 // create the chassis

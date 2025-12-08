@@ -32,10 +32,10 @@ namespace selector{
 	lv_obj_t * startAuton;
 	lv_obj_t * A1;//Goal Adjacent
 	lv_obj_t * A1Label;
-	auto A1Tag = "Win Point";
+	auto A1Tag = "Goal Right";
 	lv_obj_t * A2;//Mid-Field
 	lv_obj_t * A2Label;
-	auto A2Tag = "Goal Rush";
+	auto A2Tag = "Goal Left";
 	lv_obj_t * A3;//Anti-Auton
 	lv_obj_t * A3Label;
 	auto A3Tag = "Nothing";
@@ -131,7 +131,7 @@ namespace selector{
 		lv_style_set_text_font(&redREL,&lv_font_unscii_8);
 		lv_style_set_text_font(&skillsREL,&lv_font_unscii_8);
 		lv_style_set_text_font(&pink,&lv_font_unscii_8);
-		if(!isComp){
+		if(isComp){
 			lv_label_set_text(plate,
 " __  _____ _____  _____    ___   ___  \n"
 "/  ||  _  |  ___||  _  |  /   | / _ \\ \n"
@@ -152,7 +152,7 @@ namespace selector{
 "| |    _| |_| |\\  || |\\  \\_| |_.___/ /\n"
 "\\_|    \\___/\\_| \\_/\\_| \\_/\\___/\\____/ ");
 			lv_obj_center(plate);
-			lv_obj_add_style(lv_scr_act(),&pink),0;
+			lv_obj_add_style(lv_scr_act(),&pink,0);
 		}
 	}
 	void loadAllianceSelect(){
@@ -355,10 +355,8 @@ namespace selector{
 		lv_style_init(&pink);
 		lv_style_set_text_font(&pink,&lv_font_montserrat_16);
 		lv_style_set_bg_color(&pink,lv_palette_main(LV_PALETTE_PINK));
-		lv_style_set_text_color(&pink,lv_color_make(0,0,0));
-		lv_style_set_border_color(&pink,lv_color_make(255,255,255));
-		lv_style_set_border_width(&pink,3);
-		lv_style_set_radius(&pink,1);
+		lv_style_set_text_color(&btnREL,lv_color_make(50,50,50));
+		lv_style_set_radius(&btnREL,1);
 
 		
 		//start auton button
